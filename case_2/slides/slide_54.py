@@ -8,7 +8,7 @@ def cache_speakers():
 
     raw_speakers = {}
     for book_language, speakers in grouped_speakers.items():
-        key = create_language_group_cache_key(book_language)
+        key = book_language
         raw_speakers_language = json.dumps([speaker.dict() for speaker in speakers])
         raw_speakers[key] = raw_speakers_language
 

@@ -1,9 +1,6 @@
 def get_cached_speakers_language_group(book_languages: list[str]) -> list[Speaker]:
     redis_connect = get_redis_connect()
-    keys = [
-        create_language_group_cache_key(book_language)
-        for book_language in book_languages
-    ]
+    keys = [book_language for book_language in book_languages]
     data = redis_connect.hmget(SPEAKERS_CACHE_KEY, keys)
     speakers = []
     for raw_speakers in data:

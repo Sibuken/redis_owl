@@ -68,10 +68,6 @@ CACHE_TTL = 600
 SPEAKERS_CACHE_KEY = "owl_speakers"
 
 
-def create_language_group_cache_key(book_language: str) -> str:
-    return f"book_language_{book_language}"
-
-
 def cache_speakers():
     redis_connect = get_redis_connect()
     all_speakers = creates_speakers()
@@ -82,7 +78,7 @@ def cache_speakers():
 
     raw_speakers = {}
     for book_language, speakers in grouped_speakers.items():
-        key = create_language_group_cache_key(book_language)
+        key = book_language
         raw_speakers_language = json.dumps([speaker.dict() for speaker in speakers])
         raw_speakers[key] = raw_speakers_language
 
@@ -91,10 +87,7 @@ def cache_speakers():
 
 def get_cached_speakers_language_group(book_languages: list[str]) -> list[Speaker]:
     redis_connect = get_redis_connect()
-    keys = [
-        create_language_group_cache_key(book_language)
-        for book_language in book_languages
-    ]
+    keys = [book_language for book_language in book_languages]
     data = redis_connect.hmget(SPEAKERS_CACHE_KEY, keys)
     speakers = []
     for raw_speakers in data:
