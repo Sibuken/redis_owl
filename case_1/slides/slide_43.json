@@ -1,0 +1,35 @@
+{
+    "start_id":"(1638618684178-4",
+    "articles":[
+        {
+            "source_url":"https://some_site.com/articles/article_0",
+            "uniq_key":"uniq_key_0",
+            "duration":10,
+            "audio_url":"https://our_media_domain.com/articles/article_0.mp3"
+        },
+        {
+            "source_url":"https://some_site.com/articles/article_1",
+            "uniq_key":"uniq_key_1",
+            "duration":11,
+            "audio_url":"https://our_media_domain.com/articles/article_1.mp3"
+        },
+        {
+            "source_url":"https://some_site.com/articles/article_2",
+            "uniq_key":"uniq_key_2",
+            "duration":12,
+            "audio_url":"https://our_media_domain.com/articles/article_2.mp3"
+        },
+        {
+            "source_url":"https://some_site.com/articles/article_3",
+            "uniq_key":"uniq_key_3",
+            "duration":13,
+            "audio_url":"https://our_media_domain.com/articles/article_3.mp3"
+        },
+        {
+            "source_url":"https://some_site.com/articles/article_4",
+            "uniq_key":"uniq_key_4",
+            "duration":14,
+            "audio_url":"https://our_media_domain.com/articles/article_4.mp3"
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+[
+   {
+       "source_url":"https://some_site.com/articles/article_19",
+       "uniq_key":"uniq_key_19",
+       "duration":29,
+       "audio_url":"https://our_media_domain.com/articles/article_19.mp3"
+   },
+   {
+       "source_url":"https://some_site.com/articles/article_18",
+       "uniq_key":"uniq_key_18",
+       "duration":28,
+       "audio_url":"https://our_media_domain.com/articles/article_18.mp3"
+   }
+]

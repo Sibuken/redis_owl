@@ -1,0 +1,30 @@
+[
+    {
+        "source_url":"https://some_site.com/articles/article_8",
+        "uniq_key":"uniq_key_8",
+        "duration":18,
+        "audio_url":"https://our_media_domain.com/articles/article_8.mp3"
+    },
+    {
+        "source_url":"https://some_site.com/articles/article_7",
+        "uniq_key":"uniq_key_7",
+        "duration":17,
+        "audio_url":"https://our_media_domain.com/articles/article_7.mp3"
+    }
+]
+
+
+[
+    {
+        "source_url":"https://some_site.com/articles/article_9",
+        "uniq_key":"uniq_key_9",
+        "duration":19,
+        "audio_url":"https://our_media_domain.com/articles/article_9.mp3"
+    },
+    {
+        "source_url":"https://some_site.com/articles/article_8",
+        "uniq_key":"uniq_key_8",
+        "duration":18,
+        "audio_url":"https://our_media_domain.com/articles/article_8.mp3"
+    }
+]

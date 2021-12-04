@@ -99,4 +99,4 @@ def reset_environment(key: str):
 
 def is_exist(key: str) -> bool:
     r = get_redis_connect()
-    return r.exists(key)
+    return bool(r.exists(key))

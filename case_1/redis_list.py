@@ -13,6 +13,7 @@ from base import (
     invalidate_some_articles,
     is_exist,
     add_articles_to_cache,
+    reset_environment,
 )
 
 
@@ -24,7 +25,7 @@ LINK_LIST_CLIENT_NAME = f"link_list_{CLIENT_NAME}"
 
 
 class ListResponse(TypedDict):
-    start: Optional[int]
+    start: int
     articles: list[ArticleStruct]
 
 
@@ -42,12 +43,21 @@ def simple_create_new_redis_list():
     push_to_redis_list(raw_articles, SIMPLE_LIST_CLIENT_NAME)
 
 
-def simple_read_articles_from_cache(keys: Optional[list[str]] = None):
-    uniq_keys = keys or [f"uniq_key{i}" for i in range(20)]
+def simple_add_article_to_redis_list(number: int = 20, suffix: str = ""):
+    article = create_article(number, suffix)
+    raw_article = serialize_article(article)
+    push_to_redis_list([raw_article], SIMPLE_LIST_CLIENT_NAME)
+
+
+def simple_read_articles_from_cache(
+    start: int = 0, page_size: int = 10
+) -> list[ArticleStruct]:
     r = get_redis_connect()
-    raw_articles: list[str] = r.mget(uniq_keys)
+    start = start or 0
+    end = start + page_size
+    raw_articles = r.lrange(SIMPLE_LIST_CLIENT_NAME, start, end)
     articles: list[ArticleStruct] = deserialize_articles(raw_articles)
-    print(articles)
+    return articles
 
 
 def simple_invalidate_some_articles():
@@ -67,6 +77,15 @@ def link_create_new_redis_list():
     push_to_redis_list(articles_keys, LINK_LIST_CLIENT_NAME)
 
 
+def init_environment(is_link: bool = True):
+    if is_link:
+        reset_environment(LINK_LIST_CLIENT_NAME)
+        link_create_new_redis_list()
+    else:
+        reset_environment(SIMPLE_LIST_CLIENT_NAME)
+        simple_create_new_redis_list()
+
+
 def link_add_article_to_redis_list(number: int = 20, suffix: str = ""):
     article = create_article(number, suffix)
     r = get_redis_connect()
@@ -75,17 +94,13 @@ def link_add_article_to_redis_list(number: int = 20, suffix: str = ""):
     push_to_redis_list([article["uniq_key"]], LINK_LIST_CLIENT_NAME)
 
 
-def link_read_articles_from_list(start: int = 0, end: int = 10) -> ListResponse:
+def link_read_articles_from_list(start: int = 0, page_size: int = 10) -> ListResponse:
     r = get_redis_connect()
-    pipe = r.pipeline()
-    pipe.lrange(LINK_LIST_CLIENT_NAME, start, end)
-    pipe.llen(LINK_LIST_CLIENT_NAME)
-    keys, list_len = pipe.execute()
+    end = start + page_size
+    keys = r.lrange(LINK_LIST_CLIENT_NAME, start, end)
     raw_articles = r.mget(keys)
     articles: list[ArticleStruct] = deserialize_articles(raw_articles)
-    next_id = start + len(articles) + 1
-    if next_id >= list_len:
-        next_id = None
+    next_id = start + len(articles)
 
     return ListResponse(start=next_id, articles=articles)
 
@@ -103,4 +118,43 @@ def check_link_redis_list_pagination(start: int = 5, end: int = 10):
 
 
 def test_pagination_redis_list():
-    ...
+    print("START pagination redis list\n")
+    init_environment()
+    start = 0
+    while True:
+        response = link_read_articles_from_list(start)
+        print(SPLIT_STR)
+        print(response)
+        if len(response["articles"]) < 1:
+            break
+
+        start = response["start"]
+
+    print("END pagination redis list\n")
+
+
+def test_pagination_after_add_article_redis_list():
+    print("START pagination after add article redis list\n")
+    init_environment()
+    response = link_read_articles_from_list()
+    start = response["start"]
+    response_2 = link_read_articles_from_list(start=start)
+    print(SPLIT_STR)
+    print(response_2)
+
+    link_add_article_to_redis_list()
+
+    response_3 = link_read_articles_from_list(start=start)
+    print(SPLIT_STR)
+    print(response_3)
+
+    print("END pagination after add article redis list\n")
+
+
+def test_simple_read_redis_list():
+    print("START simple read redis list\n")
+    print(SPLIT_STR)
+    init_environment(is_link=False)
+    articles = simple_read_articles_from_cache()
+    print(articles)
+    print("END simple read redis list\n")
